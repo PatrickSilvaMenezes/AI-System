@@ -1,15 +1,45 @@
+import { ShoppingBag } from "lucide-react";
+
 export function Footer() {
     return (
-        <footer className="border-t bg-white py-6 md:py-0">
-            <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row max-w-[1200px] mx-auto px-4">
-                <p className="text-center text-sm leading-loose text-gray-500 md:text-left">
-                    © 2026 DevAI. Todos os direitos reservados.
-                </p>
-                <nav className="flex items-center space-x-4 text-sm font-medium text-gray-500">
-                    <a href="#" className="hover:text-brand-primary">Termos</a>
-                    <a href="#" className="hover:text-brand-primary">Privacidade</a>
-                    <a href="#" className="hover:text-brand-primary">Contato</a>
-                </nav>
+        <footer style={{
+            borderTop: '1px solid #F1F5F9',
+            padding: '48px 0',
+            backgroundColor: '#F9FAFB'
+        }}>
+            <div className="container">
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '48px' }}>
+                    <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
+                            <div style={{
+                                backgroundColor: 'var(--brand-primary)',
+                                color: 'white',
+                                padding: '6px',
+                                borderRadius: '8px',
+                                display: 'flex'
+                            }}>
+                                <ShoppingBag size={20} />
+                            </div>
+                            <span style={{
+                                fontSize: '20px',
+                                fontWeight: 900,
+                                letterSpacing: '-0.025em',
+                                color: 'var(--text-main)'
+                            }}>
+                                SYSTEM<span style={{ color: 'var(--brand-primary)' }}>AI</span>
+                            </span>
+                        </div>
+                        <p style={{
+                            fontSize: '14px',
+                            color: '#6B7280',
+                            maxWidth: '300px',
+                            lineHeight: '1.6'
+                        }}>
+                            Plataforma inteligente para gestão e venda de produtos,
+                            especialmente desenhada para microempreendedores.
+                        </p>
+                    </div>
+                </div>
             </div>
         </footer>
     );

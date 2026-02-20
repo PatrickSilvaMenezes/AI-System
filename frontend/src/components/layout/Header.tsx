@@ -1,40 +1,80 @@
 import Link from "next/link";
-import { ShoppingCart, User, Search, Store } from "lucide-react";
+import { ShoppingBag, User, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function Header() {
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-surface-bg/95 backdrop-blur supports-[backdrop-filter]:bg-surface-bg/60">
-            <div className="container flex h-16 items-center px-4 max-w-[1200px] mx-auto">
-                <Link href="/" className="mr-6 flex items-center space-x-2">
-                    <Store className="h-6 w-6 text-brand-primary" />
-                    <span className="hidden font-bold sm:inline-block">
-                        DevAI
+        <header style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 50,
+            width: '100%',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(12px)',
+            borderBottom: '1px solid #F1F5F9'
+        }}>
+            <div className="container" style={{
+                display: 'flex',
+                height: '64px',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '16px'
+            }}>
+                <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{
+                        backgroundColor: 'var(--brand-primary)',
+                        color: 'white',
+                        padding: '6px',
+                        borderRadius: '8px',
+                        display: 'flex'
+                    }}>
+                        <ShoppingBag size={20} />
+                    </div>
+                    <span style={{
+                        fontSize: '20px',
+                        fontWeight: 900,
+                        letterSpacing: '-0.025em',
+                        color: 'var(--text-main)'
+                    }}>
+                        SYSTEM<span style={{ color: 'var(--brand-primary)' }}>AI</span>
                     </span>
                 </Link>
-                <div className="flex flex-1 items-center justify-center px-4">
-                    <div className="relative w-full max-w-sm">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-                        <Input
-                            type="search"
-                            placeholder="Buscar produtos..."
-                            className="w-full pl-8 bg-white"
-                        />
-                    </div>
+
+                <div style={{ flex: 1, maxWidth: '400px', position: 'relative' }}>
+                    <Search size={16} style={{
+                        position: 'absolute',
+                        left: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: '#9CA3AF'
+                    }} />
+                    <Input
+                        placeholder="Buscar produtos..."
+                        style={{ paddingLeft: '40px', borderRadius: '999px', backgroundColor: '#F9FAFB', border: 'none' }}
+                    />
                 </div>
-                <nav className="flex items-center space-x-4">
-                    <Link href="/cart">
-                        <Button variant="ghost" size="icon" aria-label="Carrinho">
-                            <ShoppingCart className="h-5 w-5" />
-                        </Button>
-                    </Link>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <Button variant="ghost" size="icon" style={{ position: 'relative' }}>
+                        <ShoppingBag size={20} />
+                        <span style={{
+                            position: 'absolute',
+                            top: '4px',
+                            right: '4px',
+                            height: '8px',
+                            width: '8px',
+                            backgroundColor: 'var(--brand-primary)',
+                            borderRadius: '50%',
+                            border: '2px solid white'
+                        }}></span>
+                    </Button>
                     <Link href="/login">
-                        <Button variant="ghost" size="icon" aria-label="Login">
-                            <User className="h-5 w-5" />
+                        <Button style={{ borderRadius: '999px', padding: '0 24px' }}>
+                            Entrar
                         </Button>
                     </Link>
-                </nav>
+                </div>
             </div>
         </header>
     );

@@ -5,33 +5,33 @@ import Link from "next/link";
 
 export default function LoginPage() {
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
-            <Card className="w-full max-w-md bg-white shadow-xl">
-                <CardHeader className="space-y-1">
-                    <CardTitle className="text-2xl font-bold text-center">Acesse sua conta</CardTitle>
-                    <CardDescription className="text-center">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 200px)' }}>
+            <Card style={{ width: '100%', maxWidth: '400px' }}>
+                <CardHeader>
+                    <CardTitle style={{ textAlign: 'center', fontSize: '24px' }}>Acesse sua conta</CardTitle>
+                    <CardDescription style={{ textAlign: 'center' }}>
                         Entre com seu e-mail e senha para continuar
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                        <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                <CardContent style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <label htmlFor="email" style={{ fontSize: '14px', fontWeight: 500 }}>
                             E-mail
                         </label>
                         <Input id="email" type="email" placeholder="seu@email.com" />
                     </div>
-                    <div className="space-y-2">
-                        <label htmlFor="password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <label htmlFor="password" style={{ fontSize: '14px', fontWeight: 500 }}>
                             Senha
                         </label>
                         <Input id="password" type="password" />
                     </div>
                 </CardContent>
-                <CardFooter className="flex flex-col space-y-4">
-                    <Button className="w-full text-lg h-12">Entrar</Button>
-                    <div className="text-sm text-center text-gray-500">
+                <CardFooter style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <Button style={{ width: '100%', height: '48px', fontSize: '18px' }}>Entrar</Button>
+                    <div style={{ fontSize: '14px', textAlign: 'center', color: '#6B7280' }}>
                         Não tem uma conta?{" "}
-                        <Link href="/register" className="text-brand-primary hover:underline font-medium">
+                        <Link href="/register" style={{ color: 'var(--brand-primary)', fontWeight: 500 }}>
                             Criar conta
                         </Link>
                     </div>

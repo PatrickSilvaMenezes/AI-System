@@ -1,42 +1,83 @@
 import { products } from "@/lib/data";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
     <section>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-text-main">Vitrine de Produtos</h1>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
+        <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-main)' }}>Vitrine de Produtos</h1>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+        gap: '24px',
+        marginBottom: '64px'
+      }}>
         {products.map((product) => (
-          <Card key={product.id} className="group overflow-hidden bg-white hover:shadow-lg transition-all duration-300 border-gray-200">
-            <CardHeader className="p-0">
-              <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
-                {/* Using standard img for simplicity in mock, would use Image in prod */}
+          <Card key={product.id} className="product-card" style={{ display: 'flex', flexDirection: 'column' }}>
+            <CardHeader style={{ padding: 0 }}>
+              <div style={{ position: 'relative', aspectRatio: '1/1', width: '100%', overflow: 'hidden', backgroundColor: '#F9FAFB', borderRadius: '8px' }}>
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
                   loading="lazy"
                 />
               </div>
             </CardHeader>
-            <CardContent className="p-4">
-              <div className="text-sm text-gray-500 mb-1">{product.category}</div>
-              <CardTitle className="text-lg font-semibold line-clamp-1 mb-2 text-text-main group-hover:text-brand-primary transition-colors">
+            <CardContent style={{ padding: '12px 0 0 0', flex: 1 }}>
+              <div style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#9CA3AF', fontWeight: 700, marginBottom: '4px' }}>
+                {product.category}
+              </div>
+              <CardTitle style={{ fontSize: '14px', fontWeight: 600, marginBottom: '8px', minHeight: '40px' }} className="product-card-title">
                 {product.name}
               </CardTitle>
-              <div className="text-2xl font-bold text-brand-primary">
+              <div className="product-card-price">
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}
               </div>
             </CardContent>
-            <CardFooter className="p-4 pt-0">
-              <Button className="w-full font-semibold shadow-sm hover:shadow-md transition-all">
-                Adicionar ao Carrinho
+            <CardFooter style={{ padding: '12px 0 0 0' }}>
+              <Button style={{ width: '100%' }}>
+                Comprar
               </Button>
             </CardFooter>
           </Card>
+        ))}
+      </div>
+
+      {/* Diferenciais Section */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '32px',
+        padding: '48px 0',
+        borderTop: '1px solid #F1F5F9'
+      }}>
+        {[
+          { title: "Frete Inteligente", desc: "Logística otimizada por IA", icon: "🚚" },
+          { title: "Segurança DevAI", desc: "Proteção antifraude avançada", icon: "🛡️" },
+          { title: "Curadoria IA", desc: "Sugestões personalizadas", icon: "✨" },
+          { title: "Suporte DevBot", desc: "Sempre pronto para ajudar", icon: "🤖" },
+        ].map((item, idx) => (
+          <div key={idx} style={{ textAlign: 'center' }}>
+            <div style={{
+              width: '48px',
+              height: '48px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(37, 99, 235, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '24px',
+              margin: '0 auto 16px auto'
+            }}>
+              {item.icon}
+            </div>
+            <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>{item.title}</h3>
+            <p style={{ fontSize: '14px', color: '#6B7280' }}>{item.desc}</p>
+          </div>
         ))}
       </div>
     </section>
