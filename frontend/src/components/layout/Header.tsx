@@ -1,7 +1,10 @@
 import Link from "next/link";
-import { ShoppingBag, User, Search } from "lucide-react";
+import { ShoppingBag, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+
+
 
 export function Header() {
     return (
@@ -69,12 +72,18 @@ export function Header() {
                             border: '2px solid white'
                         }}></span>
                     </Button>
-                    <Link href="/login">
-                        <Button style={{ borderRadius: '999px', padding: '0 24px' }}>
-                            Entrar
-                        </Button>
-                    </Link>
+                    <SignedOut>
+                        <SignInButton mode="modal">
+                            <Button style={{ borderRadius: '999px', padding: '0 24px' }}>
+                                Entrar
+                            </Button>
+                        </SignInButton>
+                    </SignedOut>
+                    <SignedIn>
+                        <UserButton afterSignOutUrl="/" />
+                    </SignedIn>
                 </div>
+
             </div>
         </header>
     );

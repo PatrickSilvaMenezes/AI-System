@@ -12,23 +12,28 @@ export const metadata: Metadata = {
   description: "Plataforma de e-commerce simples para microempreendedores",
 };
 
+import { ClerkProvider } from "@clerk/nextjs";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className="min-h-screen flex flex-col">
-        <Header />
-        <div className="flex-1 container py-6 flex gap-16">
-          <AppSidebar />
-          <main className="flex-1 w-full">
-            {children}
-          </main>
-        </div>
-        <Footer />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="pt-BR">
+        <body className="min-h-screen flex flex-col">
+          <Header />
+          <div className="flex-1 container py-6 flex gap-16">
+            <AppSidebar />
+            <main className="flex-1 w-full">
+              {children}
+            </main>
+          </div>
+          <Footer />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
+

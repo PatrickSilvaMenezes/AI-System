@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import { products } from "@/lib/data";
+import { SignedIn, SignedOut, SignUpButton } from "@clerk/nextjs";
+
 
 // Mock cart items based on products
 const cartItems = [
@@ -65,8 +67,16 @@ export default function CartPage() {
                             </dl>
                         </div>
                         <div className="mt-6">
-                            <Button className="w-full text-lg h-12 shadow-md">Confirmar Pedido</Button>
+                            <SignedIn>
+                                <Button className="w-full text-lg h-12 shadow-md">Confirmar Pedido</Button>
+                            </SignedIn>
+                            <SignedOut>
+                                <SignUpButton mode="modal">
+                                    <Button className="w-full text-lg h-12 shadow-md">Finalizar Compra</Button>
+                                </SignUpButton>
+                            </SignedOut>
                         </div>
+
                     </Card>
                 </div>
             </div>
