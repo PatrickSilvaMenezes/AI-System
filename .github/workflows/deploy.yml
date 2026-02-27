@@ -36,7 +36,7 @@ permissions:
 # 3. VARIÁVEIS DE AMBIENTE GLOBAIS
 # ---------------------------------------------------------------------------
 env:
-  NODE_VERSION: '22'         # Node.js LTS (Jod)
+  NODE_VERSION: '20'         # Node.js LTS (Jod)
   WORKING_DIRECTORY: frontend
 
 # ---------------------------------------------------------------------------
