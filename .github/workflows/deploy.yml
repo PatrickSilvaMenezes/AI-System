@@ -1,0 +1,290 @@
+# =============================================================================
+# 🚀 CI/CD Pipeline — Next.js + Vercel
+# =============================================================================
+# Workflow de integração e entrega contínua para o projeto Next.js.
+# - Push na branch `main`    → Production Deploy na Vercel
+# - Pull Requests             → Preview Deploy na Vercel
+#
+# Secrets Necessárias:
+#   VERCEL_TOKEN       — Token de acesso da API Vercel
+#   VERCEL_ORG_ID      — ID da organização/time na Vercel
+#   VERCEL_PROJECT_ID  — ID do projeto na Vercel
+# =============================================================================
+
+name: CI/CD Pipeline — Deploy Vercel
+
+# ---------------------------------------------------------------------------
+# 1. TRIGGERS
+# ---------------------------------------------------------------------------
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# ---------------------------------------------------------------------------
+# 2. PERMISSÕES (Princípio do Privilégio Mínimo)
+# ---------------------------------------------------------------------------
+permissions:
+  contents: read
+  pull-requests: write       # Necessário para comentar URL de preview no PR
+  deployments: write         # Necessário para registrar deploys no GitHub
+
+# ---------------------------------------------------------------------------
+# 3. VARIÁVEIS DE AMBIENTE GLOBAIS
+# ---------------------------------------------------------------------------
+env:
+  NODE_VERSION: '22'         # Node.js LTS (Jod)
+  WORKING_DIRECTORY: frontend
+  # Versão fixa do CLI da Vercel para evitar breaking changes
+  VERCEL_CLI_VERSION: '41.1.2'
+
+# ---------------------------------------------------------------------------
+# 4. JOBS
+# ---------------------------------------------------------------------------
+jobs:
+
+  # =========================================================================
+  # JOB 1: Qualidade de Código (Lint + Auditoria de Segurança)
+  # =========================================================================
+  check-quality:
+    name: 🔍 Verificação de Qualidade
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Instalação do Node.js com Cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+
+      - name: Instalar Dependências
+        run: npm ci
+
+      - name: Auditoria de Segurança (npm audit)
+        run: npm audit --audit-level=high || true
+
+      - name: Executar Linter (ESLint)
+        run: npm run lint
+
+  # =========================================================================
+  # JOB 2: Testes Unitários e de Integração
+  # =========================================================================
+  test:
+    name: 🧪 Testes
+    runs-on: ubuntu-latest
+    needs: check-quality
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    strategy:
+      fail-fast: true
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Instalação do Node.js com Cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+
+      - name: Instalar Dependências
+        run: npm ci
+
+      - name: Executar Testes
+        run: npm test --if-present
+
+  # =========================================================================
+  # JOB 3: Build + Deploy de Preview (somente Pull Requests)
+  # =========================================================================
+  deploy-preview:
+    name: 🔄 Preview Deploy (Vercel)
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+      deployments: write
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    environment:
+      name: preview
+      url: ${{ steps.deploy.outputs.preview-url }}
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Instalação do Node.js com Cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+
+      - name: Cache do Next.js (.next/cache)
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.WORKING_DIRECTORY }}/.next/cache
+          # Chave baseada no SO, lockfile e arquivos de código
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Instalar Dependências
+        run: npm ci
+
+      - name: Instalar Vercel CLI
+        run: npm install -g vercel@${{ env.VERCEL_CLI_VERSION }}
+
+      - name: Vincular Projeto Vercel (Pull Environment)
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build do Projeto (Preview)
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deploy para Preview
+        id: deploy
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "preview-url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
+          echo "### 🔗 Preview Deploy" >> "$GITHUB_STEP_SUMMARY"
+          echo "URL: $DEPLOY_URL" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Comentar URL de Preview no Pull Request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = '${{ steps.deploy.outputs.preview-url }}';
+            const body = `## 🚀 Preview Deploy\n\n` +
+              `✅ Deploy de preview concluído com sucesso!\n\n` +
+              `🔗 **URL:** ${url}\n\n` +
+              `---\n` +
+              `*Deploy automático via GitHub Actions*`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body,
+            });
+
+  # =========================================================================
+  # JOB 4: Build + Deploy de Produção (somente push na main)
+  # =========================================================================
+  deploy-production:
+    name: 🚀 Production Deploy (Vercel)
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      deployments: write
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.production-url }}
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Instalação do Node.js com Cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+
+      - name: Cache do Next.js (.next/cache)
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.WORKING_DIRECTORY }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Instalar Dependências
+        run: npm ci
+
+      - name: Instalar Vercel CLI
+        run: npm install -g vercel@${{ env.VERCEL_CLI_VERSION }}
+
+      - name: Vincular Projeto Vercel (Production Environment)
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build do Projeto (Production)
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deploy para Produção
+        id: deploy
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "production-url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
+          echo "### 🚀 Production Deploy" >> "$GITHUB_STEP_SUMMARY"
+          echo "URL: $DEPLOY_URL" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  # =========================================================================
+  # JOB 5: Notificação de Status
+  # =========================================================================
+  notify:
+    name: 📢 Notificação de Status
+    runs-on: ubuntu-latest
+    needs: [check-quality, test, deploy-preview, deploy-production]
+    if: always()
+    permissions:
+      contents: read
+
+    steps:
+      - name: Verificar Resultado do Pipeline
+        run: |
+          echo "### 📋 Resultado do Pipeline" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Job | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-----|--------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 🔍 Qualidade | ${{ needs.check-quality.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 🧪 Testes | ${{ needs.test.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 🔄 Preview | ${{ needs.deploy-preview.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 🚀 Produção | ${{ needs.deploy-production.result }} |" >> "$GITHUB_STEP_SUMMARY"
+
