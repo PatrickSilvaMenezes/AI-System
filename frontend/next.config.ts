@@ -1,8 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
-  // Removido serverExternalPackages para permitir que o bundler resolva as extensões internas do Clerk
+  /* Usando configuração padrão para permitir que o Vercel CLI gerencie o build */
 };
 
 export default nextConfig;
