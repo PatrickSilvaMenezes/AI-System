@@ -38,8 +38,6 @@ permissions:
 env:
   NODE_VERSION: '22'         # Node.js LTS (Jod)
   WORKING_DIRECTORY: frontend
-  # Versão fixa do CLI da Vercel para evitar breaking changes
-  VERCEL_CLI_VERSION: '41.1.2'
 
 # ---------------------------------------------------------------------------
 # 4. JOBS
@@ -155,7 +153,7 @@ jobs:
         run: npm ci
 
       - name: Instalar Vercel CLI
-        run: npm install -g vercel@${{ env.VERCEL_CLI_VERSION }}
+        run: npm install -g vercel@latest
 
       - name: Vincular Projeto Vercel (Pull Environment)
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
@@ -240,7 +238,7 @@ jobs:
         run: npm ci
 
       - name: Instalar Vercel CLI
-        run: npm install -g vercel@${{ env.VERCEL_CLI_VERSION }}
+        run: npm install -g vercel@latest
 
       - name: Vincular Projeto Vercel (Production Environment)
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
