@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Pencil, Trash2, Loader2, X, Check } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase";
+import Image from "next/image";
 
 interface Product {
     id: string;
@@ -136,8 +137,13 @@ export default function ProductsPage() {
                             <Card key={product.id}>
                                 <CardContent style={{ padding: 0 }}>
                                     <div style={{ display: 'flex', alignItems: 'center', padding: '16px' }}>
-                                        <div style={{ height: '64px', width: '64px', backgroundColor: '#F9FAFB', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
-                                            <img src={product.image || 'https://via.placeholder.com/64'} alt={product.name} style={{ height: '100%', width: '100%', objectFit: 'cover' }} />
+                                        <div style={{ height: '64px', width: '64px', backgroundColor: '#F9FAFB', borderRadius: '8px', overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+                                            <Image
+                                                src={product.image || 'https://via.placeholder.com/64'}
+                                                alt={product.name}
+                                                fill
+                                                className="object-cover"
+                                            />
                                         </div>
 
                                         <div style={{ marginLeft: '16px', flex: 1, minWidth: 0 }}>

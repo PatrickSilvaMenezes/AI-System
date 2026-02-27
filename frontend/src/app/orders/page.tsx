@@ -5,16 +5,16 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Filter, Eye } from "lucide-react";
 import { orders } from "@/lib/data";
 
-const getStatusVariant = (status: string) => {
+const getStatusVariant = (status: string): 'neutral' | 'success' | 'error' => {
     switch (status) {
         case "Novo": return "neutral";
         case "Pago": return "success";
-        case "Preparação": return "info";
-        case "Faturado": return "info";
-        case "Despachado": return "info";
+        case "Preparação": return "neutral";
+        case "Faturado": return "neutral";
+        case "Despachado": return "neutral";
         case "Entregue": return "success";
-        case "Cancelado": return "destructive";
-        default: return "default";
+        case "Cancelado": return "error";
+        default: return "neutral";
     }
 };
 
@@ -62,7 +62,7 @@ export default function OrdersPage() {
                                         <td className="px-6 py-4 text-gray-600">{order.date}</td>
                                         <td className="px-6 py-4 text-gray-900 font-medium">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(order.total)}</td>
                                         <td className="px-6 py-4">
-                                            <Badge variant={getStatusVariant(order.status) as any}>
+                                            <Badge variant={getStatusVariant(order.status)}>
                                                 {order.status}
                                             </Badge>
                                         </td>

@@ -1,6 +1,7 @@
 import { products } from "@/lib/data";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -19,11 +20,12 @@ export default function Home() {
           <Card key={product.id} className="product-card" style={{ display: 'flex', flexDirection: 'column' }}>
             <CardHeader style={{ padding: 0 }}>
               <div style={{ position: 'relative', aspectRatio: '1/1', width: '100%', overflow: 'hidden', backgroundColor: '#F9FAFB', borderRadius: '8px' }}>
-                <img
+                <Image
                   src={product.image}
                   alt={product.name}
-                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                  loading="lazy"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
             </CardHeader>

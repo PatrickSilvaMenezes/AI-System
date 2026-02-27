@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, TrendingUp, ShoppingBag } from "lucide-react";
 
-import { orders as allOrders } from "@/lib/data";
+import { orders as allOrders, type Order } from "@/lib/data";
 
 const dashboardStats = [
     {
@@ -30,7 +30,7 @@ const dashboardStats = [
 
 const recentOrders = allOrders.slice(0, 5);
 
-const getStatusVariant = (status: string) => {
+const getStatusVariant = (status: string): 'neutral' | 'success' | 'error' => {
     switch (status) {
         case "Novo": return "neutral";
         case "Pago": return "success";
@@ -82,14 +82,14 @@ export default function DashboardPage() {
                                     </tr>
                                 </thead>
                                 <tbody style={{ color: '#4B5563' }}>
-                                    {recentOrders.map((order: any) => (
+                                    {recentOrders.map((order: Order) => (
                                         <tr key={order.id} style={{ borderTop: '1px solid #F1F5F9' }}>
                                             <td style={{ padding: '12px 16px', fontWeight: 500, color: '#111827' }}>{order.id}</td>
                                             <td style={{ padding: '12px 16px' }}>{order.customer}</td>
                                             <td style={{ padding: '12px 16px' }}>{order.date}</td>
                                             <td style={{ padding: '12px 16px', fontWeight: 500, color: '#111827' }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(order.total)}</td>
                                             <td style={{ padding: '12px 16px' }}>
-                                                <Badge variant={getStatusVariant(order.status) as any}>
+                                                <Badge variant={getStatusVariant(order.status)}>
                                                     {order.status}
                                                 </Badge>
                                             </td>

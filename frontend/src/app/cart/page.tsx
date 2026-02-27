@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import { products } from "@/lib/data";
 import { SignedIn, SignedOut, SignUpButton } from "@clerk/nextjs";
+import Image from "next/image";
 
 
 // Mock cart items based on products
@@ -22,11 +23,12 @@ export default function CartPage() {
                 <div className="md:col-span-2 space-y-4">
                     {cartItems.map((item) => (
                         <Card key={item.id} className="flex flex-row items-center p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
-                            <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                <img
+                            <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 relative">
+                                <Image
                                     src={item.image}
                                     alt={item.name}
-                                    className="h-full w-full object-cover object-center"
+                                    fill
+                                    className="object-cover object-center"
                                 />
                             </div>
                             <div className="ml-4 flex flex-1 flex-col">

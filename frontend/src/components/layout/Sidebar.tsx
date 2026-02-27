@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Package, Users, ShoppingBag, Folder } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const navigationItems = [
     { name: "Todos os Produtos", href: "/", icon: Package, section: "vitrine" },

@@ -1,18 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import AppSidebar from "@/components/layout/Sidebar";
-import { Footer } from "@/components/layout/Footer";
+import { ClerkProvider } from "@clerk/nextjs";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import Sidebar from "@/components/layout/Sidebar";
 
 export const metadata: Metadata = {
-  title: "DevAI - E-commerce",
-  description: "Plataforma de e-commerce simples para microempreendedores",
+  title: "SystemAI — Gestão Inteligente",
+  description: "Plataforma avançada de gestão para e-commerce e varejo",
 };
-
-import { ClerkProvider } from "@clerk/nextjs";
 
 export default function RootLayout({
   children,
@@ -22,11 +19,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="pt-BR">
-        <body className="min-h-screen flex flex-col">
+        <body className="min-h-screen bg-[#F8FAFC]">
           <Header />
-          <div className="flex-1 container py-6 flex gap-16">
-            <AppSidebar />
-            <main className="flex-1 w-full">
+          <div className="flex pt-16">
+            <Sidebar />
+            <main className="flex-1 p-8 ml-64">
               {children}
             </main>
           </div>
@@ -36,4 +33,3 @@ export default function RootLayout({
     </ClerkProvider>
   );
 }
-

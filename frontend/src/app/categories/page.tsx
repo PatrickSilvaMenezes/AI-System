@@ -7,9 +7,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Pencil, Folder, List, Loader2, Trash2, Check, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { type Category } from "@/lib/data";
 
 export default function CategoriesPage() {
-    const [categories, setCategories] = useState<any[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -32,8 +33,10 @@ export default function CategoriesPage() {
 
             if (error) throw error;
 
-            const formatted = data?.map(cat => ({
-                ...cat,
+            const formatted: Category[] = data?.map(cat => ({
+                id: cat.id,
+                name: cat.name,
+                active: cat.active,
                 productsCount: cat.products?.[0]?.count || 0
             })) || [];
 
@@ -67,7 +70,7 @@ export default function CategoriesPage() {
         }
     }
 
-    async function handleEdit(category: any) {
+    async function handleEdit(category: Category) {
         setEditingId(category.id);
         setEditName(category.name);
     }

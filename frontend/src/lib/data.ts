@@ -7,6 +7,21 @@ export interface Product {
     stock: number;
 }
 
+export interface Order {
+    id: string;
+    customer: string;
+    date: string;
+    total: number;
+    status: string;
+}
+
+export interface Category {
+    id: string;
+    name: string;
+    active: boolean;
+    productsCount: number;
+}
+
 export const products: Product[] = [
     {
         id: "1",
@@ -66,7 +81,7 @@ export const clients = [
     { id: "5", name: "Pedro Santos", email: "pedro@email.com", phone: "(51) 95555-5555", city: "Porto Alegre", state: "RS" },
 ];
 
-export const orders = [
+export const orders: Order[] = [
     { id: "PED-001", customer: "João Silva", date: "19/02/2026", total: 150.00, status: "Novo" },
     { id: "PED-002", customer: "Maria Souza", date: "18/02/2026", total: 450.00, status: "Pago" },
     { id: "PED-003", customer: "Carlos Oliveira", date: "18/02/2026", total: 89.90, status: "Preparação" },
@@ -76,7 +91,7 @@ export const orders = [
     { id: "PED-007", customer: "Maria Souza", date: "14/02/2026", total: 99.90, status: "Entregue" },
 ];
 
-export const categories = [
+export const categories: Category[] = [
     { id: "1", name: "Roupas", active: true, productsCount: 20 },
     { id: "2", name: "Calçados", active: true, productsCount: 15 },
     { id: "3", name: "Acessórios", active: true, productsCount: 35 },
@@ -84,3 +99,4 @@ export const categories = [
     { id: "5", name: "Utilidades", active: true, productsCount: 8 },
     { id: "6", name: "Móveis", active: false, productsCount: 0 },
 ];
+
