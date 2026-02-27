@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@clerk/localizations": "^3.37.1",
-    "@clerk/nextjs": "^6.38.0",
+    "@clerk/nextjs": "^6.38.3",
     "@supabase/supabase-js": "^2.97.0",
     "lucide-react": "^0.575.0",
     "next": "16.1.6",
