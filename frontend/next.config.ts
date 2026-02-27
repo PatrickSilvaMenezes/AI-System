@@ -2,9 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
-  experimental: {
-    serverComponentsExternalPackages: ['@clerk/nextjs'],
-  },
+  // Removido serverExternalPackages para permitir que o bundler resolva as extensões internas do Clerk
 };
 
 export default nextConfig;
